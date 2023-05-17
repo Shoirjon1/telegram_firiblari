@@ -10,19 +10,34 @@ Qanday qilib o‘rnatish va ishlatish mumkun degan savoga quydagicha javob bor.
 2. Termux ilovasiga kirish va kerakli kutubxonalarni yuklab olish 
 3.  Kerakli kutubxonalarni quydagi tartibda yuklab olishingiz mumkun
 ** `` pkg upgrade`` **
+
 ** `` pkg install git `` **
+
 ** `` pkg Install python `` **
-** `` pip install telethon `` **
+
+** `` pip install telethon `` *
+
 ** `` pip install aiocron `` **
+
 ** `` pip install emoji `` **
+
 ** `` pip install gtts `` **
+
 ** `` pip install gpytranslate `` **
+
 ** `` pip install wheel `` **
+
 ** `` pip inst telethon all libjpeg-turbo `` **
+
 ** `` LDFLAGS="-L/system/lib64/" CFLAGS="-I/data/data/com.termux/files/usr/include/" pip install Pillow `` **
+
 ** `` pip install qrcode `` **
+
 ** `` git clone https://github.com/Shoirjon1/ telegram_firiblari.git  `` **
+
 ** `` cd  /telegram_firiblari `` **
+
 ** `` python main.py `` **
+
 
 Shundan so'ng Skript ishga tushadi va siga tushgach sizga ishga tushganligi va telegramga kirib chatga habar yuborishingizni soraydi.
