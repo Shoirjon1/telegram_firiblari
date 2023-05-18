@@ -1,7 +1,7 @@
 from telethon import TelegramClient, events, sync
 import zeus.client
 client = zeus.client.client
-@events.register(events.NewMessage(pattern=".help"))
+@events.register(events.NewMessage(pattern=".yordam"))
 async def help(event):
 	await event.edit("""
 
