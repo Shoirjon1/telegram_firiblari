@@ -5,7 +5,7 @@ client = zeus.client.client
 async def help(event):
 	await event.edit("""
 
-ZEUS-USERBOT ~~HELP~~ MENU
+Telegram firiblari menyu
 
 [01] Bombs - Animation emojise — .bombs
 [02] Help - Help menu — .help
@@ -52,6 +52,6 @@ ZEUS-USERBOT ~~HELP~~ MENU
 [43] Tts - text to voice - .tts <lang code> reply text message
 [44] Itp - image to pdf - .itp reply to image
 
-News: @ub_zeus
+News: @Shoirjon_No1_1
 """)
 	
