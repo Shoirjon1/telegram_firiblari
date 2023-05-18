@@ -1,10 +1,242 @@
 # Dasturchi bilan aloqa T.me/Shoirjon_No1
+import asyncio
+from collections import deque
+from telethon import TelegramClient, events, sync 
+import zeus.client
+client = zeus.client.client
 
-import base64, codecs
-magic = 'aW1wb3J0IGFzeW5jaW8KZnJvbSBjb2xsZWN0aW9ucyBpbXBvcnQgZGVxdWUKZnJvbSB0ZWxldGhvbiBpbXBvcnQgVGVsZWdyYW1DbGllbnQsIGV2ZW50cywgc3luYyAKaW1wb3J0IHpldXMuY2xpZW50CmNsaWVudCA9IHpldXMuY2xpZW50LmNsaWVudAoKCkBldmVudHMucmVnaXN0ZXIoZXZlbnRzLk5ld01lc3NhZ2UocGF0dGVybj1yIi5sdWwkIikpCmFzeW5jIGRlZiBsdWwoZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBkZXEgPSBkZXF1ZShsaXN0KCLwn5iC8J+ko/CfmILwn6Sj8J+YgvCfpKMiKSkKICAgIGZvciBfIGluIHJhbmdlKDQ4KToKICAgICAgICBhd2FpdCBhc3luY2lvLnNsZWVwKDAuMSkKICAgICAgICBhd2FpdCBldmVudC5lZGl0KCIiLmpvaW4oZGVxKSkKICAgICAgICBkZXEucm90YXRlKDEpCgpAZXZlbnRzLnJlZ2lzdGVyKGV2ZW50cy5OZXdNZXNzYWdlKHBhdHRlcm49Ii5zbmFrZSIpKQphc3luYyBkZWYgc25ha2UoZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBhbmltYXRpb25faW50ZXJ2YWwgPSAwLjMKICAgIGFuaW1hdGlvbl90dGwgPSByYW5nZSgwLCAyNykKICAgIGF3YWl0IGV2ZW50LmVkaXQoInNuYWtlLi4iKQogICAgYW5pbWF0aW9uX2NoYXJzID0gWwogICAgICAgICLil7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4jyIsCiAgICAgICAgIuKXu++4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPIiwKICAgICAgICAi4pe777iP4pe777iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI8iLAogICAgICAgICLil7vvuI/il7vvuI/il7vvuI/vuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4jyIsCiAgICAgICAgIuKXu++4j+KXu++4j+KXu++4j+KXu++4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPIiwKICAgICAgICAi4oCO4pe777iP4pe777iP4pe777iP4pe777iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI8iLAogICAgICAgICLil7vvuI/il7vvuI/il7vvuI/il7vvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4jyIsCiAgICAgICAgIuKXu++4j+KXu++4j+KXu++4j+KXu++4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe877iPIiwKICAgICAgICAi4pe777iP4pe777iP4pe777iP4pe777iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7zvuI8iLAogICAgICAgICLil7vvuI/il7vvuI/il7vvuI/il7vvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4jyIsCiAgICAgICAgIuKXu++4j+KXu++4j+KXu++4j+KXu++4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe777iP4pe777iPIiwKICAgICAgICAi4pe777iP4pe777iP4pe777iP4pe777iP4pe777iPXG7il7zvuI/il7zvuI/il7zvuI/il7zvuI/il7vvuI9cbuKXvO+4j+KXvO+4j+KXvO+4j+KXvO+4j+KXu++4j1xu4pe877iP4pe877iP4pe877iP4pe877iP4pe777iPXG7il7zvuI/il7zvuI/il7vvuI/il7vvuI/il7vvuI8iLAogICAgI'
-love = 'PNtVPYvy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKiB+4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr877vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7mihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKiB+4w+XKh++4w+XKh++4w+XKh++4w+XKh++4wlVfPvNtVPNtVPNtVhXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr877vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7mihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKiB+4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCVvjXVPNtVPNtVPNv4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7mihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKiB+4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV8vYNbtVPNtVPNtVPYvy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKiB+4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4wlVfPvNtVPNtVPNtVhXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKh++4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCVvjXVPNtVPNtVPNv4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7mihV/vy7mihV/vy7iihV9pohXKh++4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV8vYNbtVPNtVPNtVPYvy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKiB+4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4wlVfPvNtVPNtVPNtVhXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7mihV/vy7iihV9pohXKh++4w+XKiB+4w+XKiB+4w+XKiB+4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCVvjXVPNtVPNtVPNv4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKiB+4w+XKiB+4w+XKh++4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV8vYNbtVPNtVPNtVPYvy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr777vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4wlVfPvNtVPNtVPNtVhXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7mihV/vy7mihV/vy7iihV/vy7iihV9pohXKh++4w+XKiB+4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCVvjXVPNtVPNtVPNv4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKiB+4w+XKiB+4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV8vYNbtVPNtVPNtVPYvy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr877vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4wlVfPvNtVPNtVPNtVhXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCVvjXVPNtVPNtVPNv4cr777vC4cr777vC4cr777vC4cr777vC4cr777vCKT7vy7iihV/vy7mihV/vy7iihV/vy7mihV/vy7iihV9pohXKh++4w+XKh++4w+XKh++4w+XKh++4w+XKh++4w1kh4cr777vC4cr877vC4cr877vC4cr877vC4cr777vCKT7vy7iihV/vy7iihV/vy7iihV/vy7iihV/vy7iihV8vYNbtVPNtKDbtVPNtMz9lVTxtnJ4tLJ5coJS0nJ9hK3E0oQbXVPNtVPNtVPOuq2ScqPOup3yhL2yiYaAfMJIjXTShnJ1uqTyioy9coaEypaMuoPxXVPNtVPNtVPOuq2ScqPOyqzIhqP5yMTy0XTShnJ1uqTyioy9wnTSlp1gcVPHtZwqqXDbXDTI2MJ50pl5lMJqcp3EypvuyqzIhqUZhGzI3GJImp2SaMF'
-god = 'hwYXR0ZXJuPXIiLm5vdGhhcHB5JCIpKQphc3luYyBkZWYgbm90aGFwcHkoZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBkZXEgPSBkZXF1ZShsaXN0KCLwn5iS8J+Yj/CfmJLwn5iP8J+YkvCfmI/wn5iSIikpCiAgICBmb3IgXyBpbiByYW5nZSg0OCk6CiAgICAgICAgYXdhaXQgYXN5bmNpby5zbGVlcCgwLjEpCiAgICAgICAgYXdhaXQgZXZlbnQuZWRpdCgiIi5qb2luKGRlcSkpCiAgICAgICAgZGVxLnJvdGF0ZSgxKQoKCkBldmVudHMucmVnaXN0ZXIoZXZlbnRzLk5ld01lc3NhZ2Uob3V0Z29pbmc9VHJ1ZSwgcGF0dGVybj0iLmNsb2NrJCIpKQphc3luYyBkZWYgY2xvY2soZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBkZXEgPSBkZXF1ZShsaXN0KCLwn5WZ8J+VmPCflZfwn5WW8J+VlfCflZTwn5WT8J+VkvCflZHwn5WQ8J+VmyIpKQogICAgZm9yIF8gaW4gcmFuZ2UoNDgpOgogICAgICAgIGF3YWl0IGFzeW5jaW8uc2xlZXAoMC4xKQogICAgICAgIGF3YWl0IGV2ZW50LmVkaXQoIiIuam9pbihkZXEpKQogICAgICAgIGRlcS5yb3RhdGUoMSkKCgpAZXZlbnRzLnJlZ2lzdGVyKGV2ZW50cy5OZXdNZXNzYWdlKHBhdHRlcm49ciIubXVhaCQiKSkKYXN5bmMgZGVmIG11YWgoZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBkZXEgPSBkZXF1ZShsaXN0KCLwn5iX8J+YmfCfmJrwn5ia8J+YmCIpKQogICAgZm9yIF8gaW4gcmFuZ2UoNDgpOgogICAgICAgIGF3YWl0IGFzeW5jaW8uc2xlZXAoMC4xKQogICAgICAgIGF3YWl0IGV2ZW50LmVkaXQoIiIuam9pbihkZXEpKQogICAgICAgIGRlcS5yb3RhdGUoMSkKCgpAZXZlbnRzLnJlZ2lzdGVyKGV2ZW50cy5OZXdNZXNzYWdlKHBhdHRlcm49Ii5oZWFydCQiKSkKYXN5bmMgZGVmIGhlYXJ0KGV2ZW50KToKICAgIGlmIGV2ZW50LmZ3ZF9mcm9tOgogICAgICAgIHJldHVybgogICAgZGVxID0gZGVxdWUobGlzdCgi4p2k77iP8J+nofCfkpvwn5Ka8J+SmfCfkpzwn5akIikpCiAgICBmb3IgXyBpbiByYW5nZSg0OCk6CiAgICAgICAgYXdhaXQgYXN5bmNpby5zbGVlcCgwLjEpCiAgICAgICAgYXdhaXQgZXZlbnQuZWRpdCgiIi5qb2luKGRlcSkpCiAgICAgICAgZGVxLnJvdGF0ZSgxKQoKCkBldmVudHMucmVnaXN0ZXIoZXZlbnRzLk5ld01lc3NhZ2UocGF0dGVybj0iLmd5bSQiLCBvdXRnb2luZz1UcnVlKSkKYXN5bmMgZGVmIGd5bShldmVudCk6CiAgICBpZiBldmVudC5md2RfZnJvbToKICAgICAgICByZXR1cm4KICAgIGRlcSA9IGRlcXVlKGxpc3QoIvCfj4PigI3wn4+L4oCN8J+kuOKAjfCfj4PigI3wn4+L4oCN8J+kuOKAjfCfj4PigI3wn4+L4oCN8J+kuOKAjSIpKQogICAgZm9yIF8gaW4gcmFuZ2UoNDgpOgogICAgICAgIGF3YWl0IGFzeW5jaW8uc2xlZXAoMC4xKQogICAgICAgIGF3YWl0IGV2ZW50LmVkaXQoIiIuam9pbihkZXEpKQogICAgICAgIGRlcS5yb3RhdGUoMSkKCgpAZXZlbnRzLnJlZ2lzdGVyKGV2ZW50cy5OZXdNZXNzYWdlKHBhdHRlcm49ZiIuZWFydGgkIiwgb3V0Z29pbmc9VHJ1ZSkpCmFzeW5jIGRlZiBlYXJ0aChldmVudCk6CiAgICBpZiBldmVudC5md2RfZnJvbToKICAgICAgICByZXR1cm4KICAgIGRlcSA9IGRlcXVlKGxpc3QoIvCfjI/wn4yN8J+MjvCfjI7wn4yN8J+Mj/CfjI3wn4yOIikpCiAgICBmb3IgXyBpbiByYW5nZSg0OCk6CiAgICAgICAgYXdhaXQgYXN5bmNpby5zbGVlcCgwLjEpCiAgICAgICAgYXdhaXQgZXZlbnQuZWRpdCgiIi5qb2luKGRlcSkpCiAgICAgICAgZGVxLnJvdGF0ZSgxKQoKCkBldmVudHMucmVnaXN0ZXIoZXZlbnRzLk5ld01lc3NhZ2Uob3V0Z29pbmc9VHJ1ZSwgcGF0dGVybj0iLm1vb24kIikpCmFzeW5jIGRlZiBtb29uKGV2ZW50KToKICAgIGlmIGV2ZW50LmZ3ZF9mcm9tOgogICAgICAgIHJldHVybgogICAgZGVxID0gZGVxdWUobGlzdCgi8J+Ml/CfjJjwn4yR8J+MkvCfjJPwn4yU8J+MlfCfjJYiKSkKICAgIGZvciBfIGluIHJhbmdlKDQ4KToKICAgICAgICBhd2FpdCBhc3luY2lvLnNsZWVwKDAuMSkKICAgICAgICBhd2FpdCBldmVudC5lZGl0KCIiLmpvaW4oZGVxKSkKICAgICAgICBkZXEucm90YXRlKDEpCgoKQGV2ZW50cy5yZWdpc3RlcihldmVudHMuTmV3TWVzc2FnZShwYXR0ZXJuPXIiLmNhbmR5JCIpKQphc3luYyBkZWYgY2FuZHkoZXZlbnQpOgogICAgaWYgZXZlbnQuZndkX2Zyb206CiAgICAgICAgcmV0dXJuCiAgICBkZXEgPSBkZXF1ZShsaXN0KCLwn42m8J+Np/Cfjanwn42q8J+OgvCfjbDwn6eB8J+Nq/Cfjazwn42tIikpCiAgICBmb3IgXyBpbiByYW5nZSg0OCk6CiAgICAgICAgYXdhaXQgYXN5bmNpby5zbGVlcCgwLjEpCiAgICAgICAgYXdhaXQgZXZlbnQuZWRpdCgiIi5qb2luKGRlcSkpCiAgICAgICAgZGVxLnJvdGF0ZSgxKQoKCkBldmVudHMucmVnaXN0ZXIoZXZlbnRzLk5ld01lc3NhZ2UocGF0dGVybj1mIi5zbW9vbiQiLCBvdXRnb2luZz1UcnVlKSkKYXN5bmMgZGVmIHNtb29uKGV2ZW50KToKICAgIGlmIGV2ZW50LmZ3ZF9mcm9tOgogICAgICAgIHJldHVybgogICAgYW5pbWF0aW9uX2ludGVydmFsID0gMC4xCiAgICBhbmltYXRpb25fdHRsID0gcmFuZ2UoMCwgMTAxKQogICAgYXdhaXQgZXZlbnQuZWRpdCgic21vb24uLiIpCiAgICBhbmltYXRpb25fY2hhcnMgPSBbCiAgICAgICAgIvCfjJfwn4yX8J+Ml/CfjJfwn4yXXG7wn4yT8J+Mk/C'
-destiny = 'swWCja4lG8W+Zx1kh8W+Zy/PswWsja4lK8W+Zy/PswWqpoiPswWCja4lG8W+Zx/PswWCja4lGKT7ja4lK8W+Zy/PswWsja4lK8W+ZylVfPvNtVPNtVPNtViPswWwja4lL8W+ZzCPswWwja4lLKT7ja4lH8W+ZyCPswWGja4lH8W+ZySkh8W+ZzCPswWwja4lL8W+ZzCPswWupoiPswWGja4lH8W+ZyCPswWGja4lHKT7ja4lL8W+ZzCPswWwja4lL8W+ZzPVfPvNtVPNtVPNtViPswWUja4lE8W+ZxsPswWUja4lEKT7ja4lI8W+ZysPswWKja4lI8W+ZyIkh8W+ZxsPswWUja4lE8W+ZxsPswWSpoiPswWKja4lI8W+ZysPswWKja4lIKT7ja4lE8W+ZxsPswWUja4lE8W+ZxFVfPvNtVPNtVPNtViPswWYja4lF8W+ZxiPswWYja4lFKT7ja4lJ8W+ZyiPswWoja4lJ8W+Zyykh8W+ZxiPswWYja4lF8W+ZxiPswWWpoiPswWoja4lJ8W+ZyiPswWoja4lJKT7ja4lF8W+ZxiPswWYja4lF8W+ZxvVfPvNtVPNtVPNtViPswWCja4lG8W+Zx/PswWCja4lGKT7ja4lK8W+Zy/PswWsja4lK8W+Zy1kh8W+Zx/PswWCja4lG8W+Zx/PswWApoiPswWsja4lK8W+Zy/PswWsja4lKKT7ja4lG8W+Zx/PswWCja4lG8W+ZxlVfPvNtVPNtVPNtViPswWGja4lH8W+ZyCPswWGja4lHKT7ja4lL8W+ZzCPswWwja4lL8W+ZzSkh8W+ZyCPswWGja4lH8W+ZyCPswWEpoiPswWwja4lL8W+ZzCPswWwja4lLKT7ja4lH8W+ZyCPswWGja4lH8W+ZyPVfPvNtVPNtVPNtViPswWKja4lI8W+ZysPswWKja4lIKT7ja4lE8W+ZxsPswWUja4lE8W+ZxIkh8W+ZysPswWKja4lI8W+ZysPswWIpoiPswWUja4lE8W+ZxsPswWUja4lEKT7ja4lI8W+ZysPswWKja4lI8W+ZyFVfPvNtVPNtVPNtViPswWoja4lJ8W+ZyiPswWoja4lJKT7ja4lF8W+ZxiPswWYja4lF8W+Zxykh8W+ZyiPswWoja4lJ8W+ZyiPswWMpoiPswWYja4lF8W+ZxiPswWYja4lFKT7ja4lJ8W+ZyiPswWoja4lJ8W+ZyvVfPvNtVPOqPvNtVPOzo3VtnFOcovOuozygLKEco25sqUEfBtbtVPNtVPNtVTS3LJy0VTSmrJ5wnJ8hp2kyMKNbLJ5coJS0nJ9hK2yhqTIlqzSfXDbtVPNtVPNtVTS3LJy0VTI2MJ50YzIxnKDbLJ5coJS0nJ9hK2AbLKWmJ2xtWFN4KFxXPtcNMKMyoaEmYaWyM2ymqTIlXTI2MJ50pl5BMKqAMKAmLJqyXUOuqUEypz49MvVhqT1io24xVvjto3I0M29cozp9IUW1MFxcPzSmrJ5wVTEyMvO0oJ9iovuyqzIhqPx6PvNtVPOcMvOyqzIhqP5zq2EsMaWioGbXVPNtVPNtVPOlMKE1pz4XVPNtVTShnJ1uqTyioy9coaEypaMuoPN9VQNhZDbtVPNtLJ5coJS0nJ9hK3E0oPN9VUWuozqyXQNfVQRkAlxXVPNtVTS3LJy0VTI2MJ50YzIxnKDbVaEgo29hVvxXVPNtVTShnJ1uqTyioy9wnTSlplN9VSfXVPNtVPNtVPNv8W+ZylVfPvNtVPNtVPNtViPswWtvYNbtVPNtVPNtVPYja4lEVvjXVPNtVPNtVPNv8W+ZxvVfPvNtVPNtVPNtViPswWZvYNbtVPNtVPNtVPYja4lHVvjXVPNtVPNtVPNv8W+ZyFVfPvNtVPNtVPNtViPswWLvYNbtVPNtVPNtVPYja4lKVvjXVPNtVPNtVPNv8W+ZzPVfPvNtVPNtVPNtViPswWRvYNbtVPNtVPNtVPYja4lFVvjXVPNtVPNtVPNv8W+ZxlVfPvNtVPNtVPNtViPswWDvYNbtVPNtVPNtVPYja4lIVvjXVPNtVPNtVPNv8W+ZyvVfPvNtVPNtVPNtViPswWpvYNbtVPNtVPNtVPYja4lLVvjXVPNtVPNtVPNv8W+ZxFVfPvNtVPNtVPNtViPswWVvYNbtVPNtVPNtVPYja4lGVvjXVPNtVPNtVPNv8W+ZyPVfPvNtVPNtVPNtViPswWHvYNbtVPNtVPNtVPYja4lJVvjXVPNtVPNtVPNv8W+ZylVfPvNtVPNtVPNtViPswWtvYNbtVPNtVPNtVPYja4lEVvjXVPNtVPNtVPNv8W+ZxvVfPvNtVPNtVPNtViPswWZvYNbtVPNtVPNtVPYja4lHVvjXVPNtVPNtVPNv8W+ZyFVfPvNtVPNtVPNtViPswWLvYNbtVPNtKDbtVPNtMz9lVTxtnJ4tLJ5coJS0nJ9hK3E0oQbXVPNtVPNtVPOuq2ScqPOup3yhL2yiYaAfMJIjXTShnJ1uqTyioy9coaEypaMuoPxXVPNtVPNtVPOuq2ScqPOyqzIhqP5yMTy0XTShnJ1uqTyioy9wnTSlp1gcVPHtZmWqXDbXPxOyqzIhqUZhpzIanKA0MKVbMKMyoaEmYx5yq01yp3AuM2HbpTS0qTIlow1zVv5woT93ovDvYPOiqKEao2yhMm1HpaIyXFxXLKA5ozZtMTIzVTAfo3qhXTI2MJ50XGbXVPNtVTyzVTI2MJ50YzM3MS9zpz9gBtbtVPNtVPNtVUWyqUIlotbtVPNtLJ5coJS0nJ9hK2yhqTIlqzSfVQ0tZP41ZNbtVPNtLJ5coJS0nJ9hK3E0oPN9VUWuozqyXQNfVQR2XDbtVPNtLJ5coJS0nJ9hK2AbLKWmVQ0tJjbtVPNtVPNtVPWYo21uozEuVUyupzS0qKMwnTymnFONVSAbo2ylnz9hK05iZFVfPvNtVPNtVPNtViPscXUihV8vYNbtVPNtVPNtVPYja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6Fu8W+xbsPscXRvYNbtVPNtVPNtVPYja6Fu8W+xbsPscXUja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6Fu8W+xbsPscXUja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6Fu8W+xbsPscXUja6FuVvjXVPNtVPNtVPNv8W+xbsPscXUja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6Fu8W+xbFVfPvNtVPNtVPNtViPscXUja6FuVvjXVPNtVPNtVPNv8W+xbFVfPvNtVPNtVPNtVyAcrvVfPvNtVPNtVPNtVPWGnKbvYNbtVPNtVPNtVPNvFTRtp2y6VvjXVPNtVPNtVPNtVyAcrvOgLKA4LKWuLz96p2y6VCPscXRvYNbtVPNtVS0XVPNtVTMipvOcVTyhVTShnJ1uqTyioy90qTj6PvNtVPNtVPNtLKqunKDtLKA5ozAcol5moTIypPuuozygLKEco25snJ50MKW2LJjcPvNtVPNtVPNtLKqunKDtMKMyoaDhMJEcqPuuozygLKEco25sL2uupaAonFNyVQR2KFxX'
-joy = '\x72\x6f\x74\x31\x33'
-trust = eval('\x6d\x61\x67\x69\x63') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x6c\x6f\x76\x65\x2c\x20\x6a\x6f\x79\x29') + eval('\x67\x6f\x64') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x64\x65\x73\x74\x69\x6e\x79\x2c\x20\x6a\x6f\x79\x29')
-eval(compile(base64.b64decode(eval('\x74\x72\x75\x73\x74')),'<string>','exec'))
+
+@events.register(events.NewMessage(pattern=r".lul$"))
+async def lul(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("😂🤣😂🤣😂🤣"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+@events.register(events.NewMessage(pattern=".snake"))
+async def snake(event):
+    if event.fwd_from:
+        return
+    animation_interval = 0.3
+    animation_ttl = range(0, 27)
+    await event.edit("snake..")
+    animation_chars = [
+        "◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️◻️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "‎◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◼️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◼️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◼️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◼️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◼️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◻️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◻️◻️\n◻️◼️◼️◻️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◻️◻️\n◻️◼️◻️◻️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◼️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️\n◻️◻️◻️◻️◻️",
+        "◻️◻️◻️◻️◻️\n◻️◼️◻️◼️◻️\n◻️◻️◻️◻️◻️\n◻️◼️◼️◼️◻️\n◻️◻️◻️◻️◻️",
+    ]
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 27])
+
+@events.register(events.NewMessage(pattern=r".nothappy$"))
+async def nothappy(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("😁☹️😁☹️😁☹️😁"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(outgoing=True, pattern=".clock$"))
+async def clock(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("🕙🕘🕗🕖🕕🕔🕓🕒🕑🕐🕛"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=r".muah$"))
+async def muah(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("😗😙😚😚😘"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=".heart$"))
+async def heart(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("❤️🧡💛💚💙💜🖤"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=".gym$", outgoing=True))
+async def gym(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("🏃‍🏋‍🤸‍🏃‍🏋‍🤸‍🏃‍🏋‍🤸‍"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=f".earth$", outgoing=True))
+async def earth(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("🌏🌍🌎🌎🌍🌏🌍🌎"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(outgoing=True, pattern=".moon$"))
+async def moon(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("🌗🌘🌑🌒🌓🌔🌕🌖"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=r".candy$"))
+async def candy(event):
+    if event.fwd_from:
+        return
+    deq = deque(list("🍦🍧🍩🍪🎂🍰🧁🍫🍬🍭"))
+    for _ in range(48):
+        await asyncio.sleep(0.1)
+        await event.edit("".join(deq))
+        deq.rotate(1)
+
+
+@events.register(events.NewMessage(pattern=f".smoon$", outgoing=True))
+async def smoon(event):
+    if event.fwd_from:
+        return
+    animation_interval = 0.1
+    animation_ttl = range(0, 101)
+    await event.edit("smoon..")
+    animation_chars = [
+        "🌗🌗🌗🌗🌗\n🌓🌓🌓🌓🌓\n🌗🌗🌗🌗🌗\n🌓🌓🌓🌓🌓\n🌗🌗🌗🌗🌗",
+        "🌘🌘🌘🌘🌘\n🌔🌔🌔🌔🌔\n🌘🌘🌘🌘🌘\n🌔🌔🌔🌔🌔\n🌘🌘🌘🌘🌘",
+        "🌑🌑🌑🌑🌑\n🌕🌕🌕🌕🌕\n🌑🌑🌑🌑🌑\n🌕🌕🌕🌕🌕\n🌑🌑🌑🌑🌑",
+        "🌒🌒🌒🌒🌒\n🌖🌖🌖🌖🌖\n🌒🌒🌒🌒🌒\n🌖🌖🌖🌖🌖\n🌒🌒🌒🌒🌒",
+        "🌓🌓🌓🌓🌓\n🌗🌗🌗🌗🌗\n🌓🌓🌓🌓🌓\n🌗🌗🌗🌗🌗\n🌓🌓🌓🌓🌓",
+        "🌔🌔🌔🌔🌔\n🌘🌘🌘🌘🌘\n🌔🌔🌔🌔🌔\n🌘🌘🌘🌘🌘\n🌔🌔🌔🌔🌔",
+        "🌕🌕🌕🌕🌕\n🌑🌑🌑🌑🌑\n🌕🌕🌕🌕🌕\n🌑🌑🌑🌑🌑\n🌕🌕🌕🌕🌕",
+        "🌖🌖🌖🌖🌖\n🌒🌒🌒🌒🌒\n🌖🌖🌖🌖🌖\n🌒🌒🌒🌒🌒\n🌖🌖🌖🌖🌖",
+    ]
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 8])
+
+
+@events.register(events.NewMessage(pattern=f".tmoon$", outgoing=True))
+async def tmoon(event):
+    if event.fwd_from:
+        return
+    animation_interval = 0.1
+    animation_ttl = range(0, 117)
+    await event.edit("tmoon")
+    animation_chars = [
+        "🌗",
+        "🌘",
+        "🌑",
+        "🌒",
+        "🌓",
+        "🌔",
+        "🌕",
+        "🌖",
+        "🌗",
+        "🌘",
+        "🌑",
+        "🌒",
+        "🌓",
+        "🌔",
+        "🌕",
+        "🌖",
+        "🌗",
+        "🌘",
+        "🌑",
+        "🌒",
+        "🌓",
+        "🌔",
+        "🌕",
+        "🌖",
+        "🌗",
+        "🌘",
+        "🌑",
+        "🌒",
+        "🌓",
+        "🌔",
+        "🌕",
+        "🌖",
+    ]
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 32])
+
+
+@events.register(events.NewMessage(pattern=f".clown$", outgoing=True))
+async def clown(event):
+    if event.fwd_from:
+        return
+    animation_interval = 0.50
+    animation_ttl = range(0, 16)
+    animation_chars = [
+        "COMANDA yaratuvchisi Shoirjon_No1",
+        "🤡️",
+        "🤡🤡",
+        "🤡🤡🤡",
+        "🤡🤡🤡🤡",
+        "🤡🤡🤡🤡🤡",
+        "🤡🤡🤡🤡🤡🤡",
+        "🤡🤡🤡🤡🤡",
+        "🤡🤡🤡🤡",
+        "🤡🤡🤡",
+        "🤡🤡",
+        "🤡",
+        "Siz",
+        "Ha Siz",
+        "Aynan Siz",
+        "Aynan Siz Masqarabozsiz 🤡",
+    ]
+
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 16])
