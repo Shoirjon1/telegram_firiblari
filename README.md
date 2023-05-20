@@ -36,7 +36,7 @@ Qanday qilib o‘rnatish va ishlatish mumkun degan savoga quydagicha javob bor.
 
 ** `` git clone https://github.com/Shoirjon1/ telegram_firiblari.git  `` **
 
-** `` cd  /telegram_firiblari `` **
+** `` cd  telegram_firiblari `` **
 
 ** `` python main.py `` **
 
