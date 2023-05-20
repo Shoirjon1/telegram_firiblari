@@ -9,11 +9,12 @@ Qanday qilib o‘rnatish va ishlatish mumkun degan savoga quydagicha javob bor.
 1. Termux ilovasini o‘rnating 
 2. Termux ilovasiga kirish va kerakli kutubxonalarni yuklab olish 
 3.  Kerakli kutubxonalarni quydagi tartibda yuklab olishingiz mumkun
+
 ** `` pkg upgrade`` **
 
 ** `` pkg install git `` **
 
-** `` pkg Install python `` **
+** `` pkg install python `` **
 
 ** `` pip install telethon `` *
 
@@ -27,7 +28,7 @@ Qanday qilib o‘rnatish va ishlatish mumkun degan savoga quydagicha javob bor.
 
 ** `` pip install wheel `` **
 
-** `` pip inst telethon all libjpeg-turbo `` **
+** `` pip install libjpeg-turbo `` **
 
 ** `` LDFLAGS="-L/system/lib64/" CFLAGS="-I/data/data/com.termux/files/usr/include/" pip install Pillow `` **
 
