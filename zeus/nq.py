@@ -2,7 +2,7 @@ from telethon import TelegramClient, events
 import zeus.client
 import os
 client = zeus.client.client
-@events.register(events.NewMessage(outgoing=True, pattern='\.nq'))
+@events.register(events.NewMessage(outgoing=True, pattern='\.qzq'))
 async def nq(event):
 	       chat = await event.get_chat()
 	       replied_msg = await event.get_reply_message()
